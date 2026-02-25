@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS user (
     user_id INT PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL;
-    budget_total DOUBLE NOT NULL;
+    user_name VARCHAR(100) NOT NULL,
+    budget_total DOUBLE NOT NULL,
     spent_total DOUBLE NOT NULL
-)
+);
 
 CREATE TABLE IF NOT EXISTS transactions (
     transaction_id INT PRIMARY KEY,
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY budget_id REFERENCES budget(budget_id)
 
 );
+
 CREATE TABLE IF NOT EXISTS categories (
     category_id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -32,4 +33,4 @@ CREATE TABLE IF NOT EXISTS budget (
     user_id INT NOT NULL,
     FOREIGN KEY user_id REFERENCES user(user_id)
     FOREIGN KEY category_id REFERENCES categories(category_id)
-)
+);
