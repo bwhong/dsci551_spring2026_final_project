@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS budget (
 CREATE TABLE IF NOT EXISTS transactions (
     transaction_id INTEGER PRIMARY KEY,
     amount DOUBLE NOT NULL,
-    transaction_date DATE NOT NULL,
+    transaction_date TEXT NOT NULL,
     category_id INTEGER NOT NULL REFERENCES categories(category_id),
     budget_id INTEGER NOT NULL REFERENCES budget(budget_id), 
     user_id INTEGER NOT NULL REFERENCES users(user_id)
