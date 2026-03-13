@@ -13,22 +13,33 @@ def category_options(user_id):
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
     else:
-        print("You don't have any categories yet! Let's add some.")
+        print("\nYou don't have any categories yet! Let's add some.\n")
     print('Please select an option!')
     while True:
         category_options_id = input("1: Add Category \n2: Delete Category \n")
         if category_options_id not in ("1","2"):
             print('Please enter a proper option.')
             continue
-        category_options = int(category_options)
-        return category_options
+        category_options_id = int(category_options_id)
+        return category_options_id
 
 def add_category(user_id):
-    ###
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    category_name = input("Please input a category name!\n")
+    try:
+        cursor.execute("INSERT INTO categories(name, user_id) values(?,?)", (category_name, user_id))
+    except:
+        print('test')
+    return
 
-
-
+def delete_category(user_id):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
 
 def category_main(user_id):
-    if category_options(user_id) == 1:
-        
+    category_options_id = category_options(user_id)
+    if category_options_id == 1:
+        add_category(user_id)
+    elif category_options_id == 2:
+        delete_category(user_id)
