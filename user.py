@@ -23,4 +23,4 @@ def validate_user(username):
         cursor.execute("INSERT INTO users(user_name) values(?)", (username,))
     conn.commit()
     conn.close()
-    return data
+    return data[0][0]
