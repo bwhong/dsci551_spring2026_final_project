@@ -17,9 +17,9 @@ def validate_user(username):
     cursor.execute("SELECT user_id FROM users where user_name = (?)", (username,))
     data = cursor.fetchall()
     if data:
-        print(f'Welcome back {username}!')
+        print(f'Welcome back {username}!\n')
     else:
-        print(f"Creating a new user account. Welcome {username}!")
+        print(f"Creating a new user account. Welcome {username}!\n")
         cursor.execute("INSERT INTO users(user_name) values(?)", (username,))
         cursor.execute("SELECT user_id FROM users where user_name = (?)", (username,))
         data = cursor.fetchall()

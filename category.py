@@ -26,11 +26,13 @@ def category_options(user_id):
 def add_category(user_id):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    category_name = input("Please input a category name!\n")
+    category_name = input("\nPlease input a category name!\n")
     try:
         cursor.execute("INSERT INTO categories(name, user_id) values(?,?)", (category_name, user_id))
     except:
         print('test')
+    conn.commit()
+    conn.close()
     return
 
 def delete_category(user_id):

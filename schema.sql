@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS categories (
     category_id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     user_id INTEGER NOT NULL REFERENCES users(user_id)
 );
 
