@@ -21,6 +21,8 @@ def validate_user(username):
     else:
         print(f"Creating a new user account. Welcome {username}!")
         cursor.execute("INSERT INTO users(user_name) values(?)", (username,))
+        cursor.execute("SELECT user_id FROM users where user_name = (?)", (username,))
+        data = cursor.fetchall()
     conn.commit()
     conn.close()
     return data[0][0]
