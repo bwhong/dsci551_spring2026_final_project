@@ -27,7 +27,7 @@ def add_category(user_id):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     while True:
-        category_name = input("\nPlease input a category name! Input 'exit' if you want to leave. \n")
+        category_name = input("\nPlease input a category name to add! Input 'exit' if you want to leave. \n")
         if category_name == 'exit':
             break
         try:
@@ -36,17 +36,24 @@ def add_category(user_id):
             print(f'{category_name} already exists.')
     #commit changes        
     conn.commit()
-    #display current categories for user
-    cursor.execute("SELECT * FROM categories where user_id = (?)", (user_id,))
-    data = cursor.fetchall()
-    columns = [name[0] for name in cursor.description]
-    print(tabulate(data, headers=columns, tablefmt="grid"))
     conn.close()
     return
 
 def delete_category(user_id):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+    while True:
+        category_name = input("\nPlease input a category name to delete! Input 'exit' if you want to leave. \n")
+        if category_name == 'exit':
+            break
+        try:
+            cursor.execute("DELETE FROM categories where name = ? and user_id = ?", (category_name, user_id))
+        except:
+            print(f'{category_name} is referenced in other tables. {category_name} cannot be removed.')
+    #commit changes        
+    conn.commit()
+    conn.close()
+    return
 
 def category_main(user_id):
     while True:
