@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS categories (
     category_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    user_id INTEGER NOT NULL REFERENCES users(user_id)
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    UNIQUE(user_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS budget (
