@@ -7,7 +7,7 @@ def budget_options(user_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT b.budget_id, c.name AS category, b.amount
+    SELECT b.budget_id, c.name AS category, b.budget_amount
     FROM budgets b
     JOIN categories c ON b.category_id = c.category_id
     WHERE b.user_id = ?
@@ -61,7 +61,7 @@ def add_budget(user_id):
 
         try:
             cursor.execute(
-                "INSERT INTO budgets(amount, category_id, user_id) VALUES (?, ?, ?)",
+                "INSERT INTO budgets(budget_amount, category_id, user_id) VALUES (?, ?, ?)",
                 (amount, category_id, user_id)
             )
             print("Budget added successfully")

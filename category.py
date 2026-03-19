@@ -31,7 +31,7 @@ def add_category(user_id):
         if category_name == 'exit':
             break
         try:
-            cursor.execute("INSERT INTO categories(name, user_id) values(?,?)", (category_name, user_id))
+            cursor.execute("INSERT INTO categories(category_name, user_id) values(?,?)", (category_name, user_id))
         except:
             print(f'{category_name} already exists.')
     #commit changes        
@@ -47,7 +47,7 @@ def delete_category(user_id):
         if category_name == 'exit':
             break
         try:
-            cursor.execute("DELETE FROM categories where name = ? and user_id = ?", (category_name, user_id))
+            cursor.execute("DELETE FROM categories where category_name = ? and user_id = ?", (category_name, user_id))
         except:
             print(f'{category_name} is referenced in other tables. {category_name} cannot be removed.')
     #commit changes        
