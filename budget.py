@@ -7,7 +7,7 @@ def budget_options(user_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT b.budget_id, c.name AS category, b.budget_amount
+    SELECT b.budget_id, c.category_name AS category, b.budget_amount
     FROM budgets b
     JOIN categories c ON b.category_id = c.category_id
     WHERE b.user_id = ?
@@ -42,7 +42,7 @@ def add_budget(user_id):
             break
 
         cursor.execute(
-            "SELECT category_id FROM categories WHERE name = ? AND user_id = ?",
+            "SELECT category_id FROM categories WHERE category_name = ? AND user_id = ?",
             (category_name, user_id)
         )
         category = cursor.fetchone()
@@ -82,7 +82,7 @@ def delete_budget(user_id):
             break
 
         cursor.execute(
-            "SELECT category_id FROM categories WHERE name = ? AND user_id = ?",
+            "SELECT category_id FROM categories WHERE category_name = ? AND user_id = ?",
             (category_name, user_id)
         )
         category = cursor.fetchone()
