@@ -9,13 +9,16 @@ if __name__ == "__main__":
     print('Welcome to the Budget Management Application!\n')
     username = ask_username()
     user_id = validate_user(username)
-    main_menu_id = main_menu_options()
-    if main_menu_id == 1:
-        category_main(user_id)
-        # go to category and create categories -> create a default list (ex: press 1 to add/delete cateogires, press 2 to continue)
-    elif main_menu_id == 2:
-        budget_main(user_id)
-    #elif main_menu_id == 3: 
-        # go to transactions py file and add/delete/update a transation (display a list of transactions but filtered for x things)
-    #elif main_menu_id == 4:    
-        # show summary statistics 
+    while True:
+        main_menu_id = main_menu_options()
+        if main_menu_id == 1:
+            category_main(user_id)
+            # go to category and create categories -> create a default list (ex: press 1 to add/delete cateogires, press 2 to continue)
+        elif main_menu_id == 2:
+            budget_main(user_id)
+        #elif main_menu_id == 3: 
+            # go to transactions py file and add/delete/update a transation (display a list of transactions but filtered for x things)
+        #elif main_menu_id == 4:    
+            # show summary statistics 
+        elif main_menu_id == 5:
+            break

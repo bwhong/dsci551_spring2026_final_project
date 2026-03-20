@@ -38,6 +38,18 @@ def add_budget(user_id):
     cursor = conn.cursor()
 
     while True:
+
+        #show categories
+        cursor.execute("""
+            SELECT c.category_name AS category, b.budget_amount, b.month
+            FROM categories c
+            LEFT JOIN budgets b ON c.category_id = b.category_id
+            WHERE c.user_id = ?
+            """, (user_id,))
+        data = cursor.fetchall()
+        columns = [name[0] for name in cursor.description]
+        print(tabulate(data, headers=columns, tablefmt="grid"))
+
         category_name = input("\nEnter category name for budget (or 'exit'): ")
         if category_name == "exit":
             break
@@ -61,9 +73,15 @@ def add_budget(user_id):
             continue
 
         try:
+            month = input("Enter Month and Year (MM-YYYY): ")
+        except ValueError:
+            print("Please enter a valid month")
+            continue
+
+        try:
             cursor.execute(
-                "INSERT INTO budgets(budget_amount, category_id, user_id) VALUES (?, ?, ?)",
-                (amount, category_id, user_id)
+                f"INSERT INTO budgets(budget_amount, category_id, user_id, month) VALUES (?, ?, ?, ?)",
+                (amount, category_id, user_id, month)
             )
             print("Budget added successfully")
         except:
@@ -78,6 +96,18 @@ def delete_budget(user_id):
     cursor = conn.cursor()
 
     while True:
+
+        #show categories
+        cursor.execute("""
+            SELECT c.category_name AS category, b.budget_amount, b.month
+            FROM categories c
+            LEFT JOIN budgets b ON c.category_id = b.category_id
+            WHERE c.user_id = ?
+            """, (user_id,))
+        data = cursor.fetchall()
+        columns = [name[0] for name in cursor.description]
+        print(tabulate(data, headers=columns, tablefmt="grid"))
+        
         category_name = input("\nEnter category name to remove budget (or 'exit'): ")
         if category_name == "exit":
             break
