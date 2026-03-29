@@ -2,22 +2,31 @@
 import sqlite3
 from config import DATABASE
 from tabulate import tabulate
+from datetime import datetime
 
 def budget_options(user_id):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+    
+    while True:
+        month_year = input("\nEnter Month and Year (MM-YYYY) for Budgets:")
+        try:
+            print(datetime.strptime(month_year, "%m-%Y"))
+            break
+        except ValueError:
+            print('Please enter a valid date! ')
 
     cursor.execute("""
     SELECT b.budget_id, c.category_name AS category, b.budget_amount
     FROM budgets b
     JOIN categories c ON b.category_id = c.category_id
-    WHERE b.user_id = ?
-    """, (user_id,))
+    WHERE b.user_id = ? and b.month =?
+    """, (user_id, month_year))
 
     data = cursor.fetchall()
 
     if data:
-        print("Here are your Budgets")
+        print("Here are your Budgets for the month")
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
@@ -31,9 +40,9 @@ def budget_options(user_id):
         if budget_option_id not in ("1", "2", "3"):
             print("Please enter a proper option")
             continue
-        return int(budget_option_id)
+        return int(budget_option_id), month_year
 
-def add_budget(user_id):
+def add_budget(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
@@ -41,11 +50,11 @@ def add_budget(user_id):
 
         #show categories
         cursor.execute("""
-            SELECT c.category_name AS category, b.budget_amount, b.month
+            SELECT c.category_name AS category, b.budget_amount
             FROM categories c
-            LEFT JOIN budgets b ON c.category_id = b.category_id
-            WHERE c.user_id = ?
-            """, (user_id,))
+            LEFT JOIN budgets b ON c.category_id = b.category_id and b.month = ?
+            WHERE c.user_id = ? 
+            """, (month_year, user_id))
         data = cursor.fetchall()
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
@@ -73,15 +82,9 @@ def add_budget(user_id):
             continue
 
         try:
-            month = input("Enter Month and Year (MM-YYYY): ")
-        except ValueError:
-            print("Please enter a valid month")
-            continue
-
-        try:
             cursor.execute(
                 f"INSERT INTO budgets(budget_amount, category_id, user_id, month) VALUES (?, ?, ?, ?)",
-                (amount, category_id, user_id, month)
+                (amount, category_id, user_id, month_year)
             )
             print("Budget added successfully")
         except:
@@ -91,7 +94,7 @@ def add_budget(user_id):
     conn.close()
     return
 
-def delete_budget(user_id):
+def delete_budget(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
@@ -99,11 +102,11 @@ def delete_budget(user_id):
 
         #show categories
         cursor.execute("""
-            SELECT c.category_name AS category, b.budget_amount, b.month
+            SELECT c.category_name AS category, b.budget_amount
             FROM categories c
-            LEFT JOIN budgets b ON c.category_id = b.category_id
+            LEFT JOIN budgets b ON c.category_id = b.category_id and b.month = ?
             WHERE c.user_id = ?
-            """, (user_id,))
+            """, (month_year, user_id))
         data = cursor.fetchall()
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
@@ -125,8 +128,8 @@ def delete_budget(user_id):
         category_id = category[0]
 
         cursor.execute(
-            "DELETE FROM budgets WHERE category_id = ? AND user_id = ?",
-            (category_id, user_id)
+            "DELETE FROM budgets WHERE category_id = ? AND user_id = ? and month = ?",
+            (category_id, user_id, month_year)
         )
 
         if cursor.rowcount == 0:
@@ -139,12 +142,12 @@ def delete_budget(user_id):
 
 def budget_main(user_id):
     while True:
-        budget_option_id = budget_options(user_id)
+        budget_option_id, month_year = budget_options(user_id)
 
         if budget_option_id == 1:
-            add_budget(user_id)
+            add_budget(user_id, month_year)
         elif budget_option_id == 2:
-            delete_budget(user_id)
+            delete_budget(user_id, month_year)
         else:
             return
             
