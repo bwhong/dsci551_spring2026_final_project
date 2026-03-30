@@ -3,6 +3,7 @@ from user import ask_username, validate_user
 from main_menu import main_menu_options
 from category import category_main
 from budget import budget_main
+from transactions import transaction_main
 
 if __name__ == "__main__":
     initialize_database()
@@ -13,10 +14,10 @@ if __name__ == "__main__":
         main_menu_id = main_menu_options()
         if main_menu_id == 1:
             category_main(user_id)
-            # go to category and create categories -> create a default list (ex: press 1 to add/delete cateogires, press 2 to continue)
         elif main_menu_id == 2:
             budget_main(user_id)
-        #elif main_menu_id == 3: 
+        elif main_menu_id == 3: 
+            transaction_main(user_id)
             # go to transactions py file and add/delete/update a transation (display a list of transactions but filtered for x things)
         #elif main_menu_id == 4:    
             # show summary statistics 
