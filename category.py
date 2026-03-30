@@ -41,6 +41,7 @@ def add_category(user_id):
 
 def delete_category(user_id):
     conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
     while True:
         category_name = input("\nPlease input a category name to delete! Input 'exit' if you want to leave. \n")

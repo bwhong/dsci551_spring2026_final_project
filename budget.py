@@ -6,6 +6,7 @@ from datetime import datetime
 
 def budget_options(user_id):
     conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
     
     while True:
@@ -98,6 +99,7 @@ def add_budget(user_id, month_year):
 
 def delete_budget(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
 
     while True:
