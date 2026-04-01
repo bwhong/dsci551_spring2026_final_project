@@ -2,21 +2,13 @@ import sqlite3
 from config import DATABASE
 from tabulate import tabulate
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
-def transaction_options(user_id):
+def transaction_options(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
-    
-    while True:
-        month_year = input("\nEnter Month and Year (YYYY-MM) for Transactions (or 'exit'):")
-        if month_year == 'exit':
-            break
-        try:
-            print(datetime.strptime(month_year, "%Y-%m"))
-            break
-        except ValueError:
-            print('Please enter a valid date!')
-            
+
     cursor.execute("""
     SELECT t.transaction_id, t.amount, c.category_name, t.transaction_date
     FROM transactions t
@@ -47,51 +39,68 @@ def transaction_options(user_id):
 
 def add_transaction(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
 
     while True:
-
-        #show categories
+        #show transactions
         cursor.execute("""
-            SELECT c.category_name AS category, b.budget_amount
-            FROM categories c
-            LEFT JOIN budgets b ON c.category_id = b.category_id and b.month = ?
-            WHERE c.user_id = ? 
-            """, (month_year, user_id))
+        SELECT t.transaction_id, t.amount, c.category_name, t.transaction_date
+        FROM transactions t
+        JOIN categories c ON t.category_id = c.category_id
+        WHERE t.user_id = ? and t.transaction_date >= ? || '-01' AND t.transaction_date < date(? || '-01', '+1 month')
+        ORDER BY t.transaction_date desc
+        """, (user_id, month_year, month_year))
         data = cursor.fetchall()
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
 
-        category_name = input("\nEnter category name for budget (or 'exit'): ")
-        if category_name == "exit":
-            break
-
-        cursor.execute(
-            "SELECT category_id FROM categories WHERE category_name = ? AND user_id = ?",
-            (category_name, user_id)
-        )
-        category = cursor.fetchone()
-
-        if not category:
-            print("Category does not exist")
-            continue 
-
-        category_id = category[0]
-
         try:
-            amount = float(input("Enter budget amount: "))
+            transaction_amount = input("\nEnter transaction amount (or 'exit'): ")
+            if transaction_amount == "exit":
+                break
+            else:
+                transaction_amount = float(transaction_amount)
         except ValueError:
-            print("Please enter a valid number")
+            print("Please enter a valid amount")
             continue
 
         try:
-            cursor.execute(
-                f"INSERT INTO budgets(budget_amount, category_id, user_id, month) VALUES (?, ?, ?, ?)",
-                (amount, category_id, user_id, month_year)
-            )
-            print("Budget added successfully")
+            transaction_date = datetime.strptime(input("Enter transaction date (YYYY-MM-DD): "), "%Y-%m-%d")
+            if (datetime.strptime(month_year, '%Y-%m') + relativedelta(months=1)) > transaction_date > datetime.strptime(month_year, '%Y-%m'):
+                raise ValueError
+        except ValueError:
+            print("Please enter a valid date")
+            continue
+
+        cursor.execute("""
+            SELECT category_name
+            FROM categories
+            where user_id = ?
+            """, (user_id))
+        data = cursor.fetchall()
+        print(data)
+        try:
+            cursor.execute("""
+            SELECT category_name
+            FROM categories
+            where user_id = ?
+            """, (user_id))
+            data = cursor.fetchall()
+            print(data)
+            category_name = input('Enter Category Name')
         except:
-            print("Budget already exists for this category")
+            print('Please enter a valid category name!')
+            continue
+        
+        try:
+            cursor.execute(
+                f"INSERT INTO transactions(amount, transaction_date, category_id, budget_id, user_id) VALUES (?, ?, ?, ?)",
+                (amount, transaction_date, category_id, budget_id, user_id, month_year)
+            )
+            print("Transaction added successfully")
+        except:
+            print("Transaction already exists! ")
 
     conn.commit()
     conn.close()
@@ -100,7 +109,16 @@ def add_transaction(user_id, month_year):
 
 def transaction_main(user_id):
     while True:
-        budget_option_id, month_year = transaction_options(user_id)
+        month_year = input("\nEnter Month and Year (YYYY-MM) for Transactions (or 'exit'):")
+        if month_year == 'exit':
+            break
+        try:
+            print(datetime.strptime(month_year, "%Y-%m"))
+            break
+        except ValueError:
+            print('Please enter a valid date!')
+    while True:
+        budget_option_id, month_year = transaction_options(user_id, month_year)
 
         if budget_option_id == 1:
             add_transaction(user_id, month_year)
