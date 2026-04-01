@@ -4,20 +4,10 @@ from config import DATABASE
 from tabulate import tabulate
 from datetime import datetime
 
-def budget_options(user_id):
+def budget_options(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
-    
-    while True:
-        month_year = input("\nEnter Month and Year (YYYY-MM) for Budgets (or 'exit'):")
-        if month_year == 'exit':
-            break
-        try:
-            print(datetime.strptime(month_year, "%Y-%m"))
-            break
-        except ValueError:
-            print('Please enter a valid date! ')
 
     cursor.execute("""
     SELECT b.budget_id, c.category_name AS category, b.budget_amount
@@ -29,7 +19,7 @@ def budget_options(user_id):
     data = cursor.fetchall()
 
     if data:
-        print("Here are your Budgets for the month")
+        print("Here are your set Budgets for the month")
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
@@ -146,7 +136,17 @@ def delete_budget(user_id, month_year):
 
 def budget_main(user_id):
     while True:
-        budget_option_id, month_year = budget_options(user_id)
+        month_year = input("\nEnter Month and Year (YYYY-MM) for Budgets (or 'exit'):")
+        if month_year == 'exit':
+            break
+        try:
+            datetime.strptime(month_year, "%Y-%m")
+            break
+        except ValueError:
+            print('Please enter a valid date!')
+
+    while True:
+        budget_option_id, month_year = budget_options(user_id, month_year)
 
         if budget_option_id == 1:
             add_budget(user_id, month_year)
