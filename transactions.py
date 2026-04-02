@@ -96,6 +96,8 @@ def add_transaction(user_id, month_year):
         if not data:
             print('Please enter a budget first!')
             continue
+        else:
+            budget_id = data[0][0]
 
         #get transaction amount
         try:
@@ -116,11 +118,13 @@ def add_transaction(user_id, month_year):
         except ValueError:
             print("Please enter a valid date")
             continue
-        
+
+        break
+    
         try:
             cursor.execute(
                 f"INSERT INTO transactions(amount, transaction_date, category_id, budget_id, user_id) VALUES (?, ?, ?, ?)",
-                (amount, transaction_date, category_id, budget_id, user_id, month_year)
+                (transaction_amount, transaction_date, category_id, budget_id, user_id, month_year)
             )
             print("Transaction added successfully")
         except:
