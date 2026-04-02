@@ -55,8 +55,51 @@ def add_transaction(user_id, month_year):
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
 
+        print()
+
+        #get category id
+        cursor.execute("""
+            SELECT category_name
+            FROM categories
+            where user_id = ?
+            """, (user_id, ))
+        data = cursor.fetchall()
+        if not data:
+            print('Please enter a category first!')
+            break
+        print('\nHere are your Categories!\n')
+        columns = [name[0] for name in cursor.description]
+        print(tabulate(data, headers = columns, tablefmt = "grid"))
+        print()
         try:
-            transaction_amount = input("\nEnter transaction amount (or 'exit'): ")
+            category_name = input("Enter category name (or 'exit'): ")
+            if category_name  == "exit":
+                break
+            else:
+                cursor.execute("""
+                    SELECT category_id
+                    FROM categories
+                    where user_id = ? and category_name = ?
+                    """, (user_id, category_name))
+                category_id = cursor.fetchall()[0][0]
+        except:
+            print('Please enter a valid category name!')
+            continue
+
+        #get budget id
+        cursor.execute("""
+            SELECT budget_id
+            FROM budgets
+            where user_id = ? and category_id = ? and month = ?
+            """, (user_id, category_id, month_year))
+        data = cursor.fetchall()
+        if not data:
+            print('Please enter a budget first!')
+            continue
+
+        #get transaction amount
+        try:
+            transaction_amount = input("Enter transaction amount (or 'exit'): ")
             if transaction_amount == "exit":
                 break
             else:
@@ -65,32 +108,13 @@ def add_transaction(user_id, month_year):
             print("Please enter a valid amount")
             continue
 
+        #get transaction date
         try:
             transaction_date = datetime.strptime(input("Enter transaction date (YYYY-MM-DD): "), "%Y-%m-%d")
-            if (datetime.strptime(month_year, '%Y-%m') + relativedelta(months=1)) > transaction_date > datetime.strptime(month_year, '%Y-%m'):
+            if not (datetime.strptime(month_year, '%Y-%m') + relativedelta(months=1)) > transaction_date > datetime.strptime(month_year, '%Y-%m'):
                 raise ValueError
         except ValueError:
             print("Please enter a valid date")
-            continue
-
-        cursor.execute("""
-            SELECT category_name
-            FROM categories
-            where user_id = ?
-            """, (user_id))
-        data = cursor.fetchall()
-        print(data)
-        try:
-            cursor.execute("""
-            SELECT category_name
-            FROM categories
-            where user_id = ?
-            """, (user_id))
-            data = cursor.fetchall()
-            print(data)
-            category_name = input('Enter Category Name')
-        except:
-            print('Please enter a valid category name!')
             continue
         
         try:
@@ -113,7 +137,7 @@ def transaction_main(user_id):
         if month_year == 'exit':
             break
         try:
-            print(datetime.strptime(month_year, "%Y-%m"))
+            datetime.strptime(month_year, "%Y-%m")
             break
         except ValueError:
             print('Please enter a valid date!')
