@@ -81,7 +81,7 @@ def add_budget(user_id, month_year):
             )
             print("Budget added successfully")
         except:
-            print("Budget already exists for this category")
+            print("Budget already exists.")
 
     conn.commit()
     conn.close()
@@ -121,15 +121,18 @@ def delete_budget(user_id, month_year):
 
         category_id = category[0]
 
-        cursor.execute(
-            "DELETE FROM budgets WHERE category_id = ? AND user_id = ? and month = ?",
-            (category_id, user_id, month_year)
-        )
+        try:
+            cursor.execute(
+                "DELETE FROM budgets WHERE category_id = ? AND user_id = ? and month = ?",
+                (category_id, user_id, month_year)
+            )
+            if cursor.rowcount == 0:
+                print("No budget exists for that category")
+            else:
+                print("Budget deleted successfully")
+        except:
+            print(f'{category_name} is referenced in other tables. {category_name} cannot be removed.')
 
-        if cursor.rowcount == 0:
-            print("No budget exists for that category")
-        else:
-            print("Budget deleted successfully")
     conn.commit()
     conn.close()
     return
