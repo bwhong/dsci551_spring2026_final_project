@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS budgets (
     category_id INTEGER REFERENCES categories(category_id),
     budget_amount double NOT NULL,
     month TEXT NOT NULL,
-    user_id INTEGER NOT NULL REFERENCES users(user_id)
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    UNIQUE(user_id, category_id, month)
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
