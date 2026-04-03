@@ -132,11 +132,43 @@ def add_transaction(user_id, month_year):
     conn.close()
     return
 
-def add_transaction(user_id, month_year):
+def delete_transaction(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
+    while True:
+        #show transactions
+        cursor.execute("""
+        SELECT t.transaction_id, t.amount, c.category_name, t.transaction_date
+        FROM transactions t
+        JOIN categories c ON t.category_id = c.category_id
+        WHERE t.user_id = ? and t.transaction_date >= ? || '-01' AND t.transaction_date < date(? || '-01', '+1 month')
+        ORDER BY t.transaction_date desc
+        """, (user_id, month_year, month_year))
+        data = cursor.fetchall()
+        columns = [name[0] for name in cursor.description]
+        print(tabulate(data, headers=columns, tablefmt="grid"))
+        try:
+            transaction_id = input("\nEnter transaction id to delete (or 'exit'): ")
+            if transaction_id == "exit":
+                break
+            else:
+                transaction_id = int(transaction_id)
+        except ValueError:
+            print('Please enter a proper transaction id.')
 
+
+        try:
+            cursor.execute(
+                "DELETE FROM transactions WHERE transaction_id = ?",
+                (transaction_id,)
+            )
+            print('Transaction successfully deleted!')
+        except:
+            print('This transaction id does not exist.')
+    conn.commit()
+    conn.close()
+    return
 
 def transaction_main(user_id):
     while True:
@@ -154,7 +186,7 @@ def transaction_main(user_id):
         if budget_option_id == 1:
             add_transaction(user_id, month_year)
         elif budget_option_id == 2:
-            delete_budget(user_id, month_year)
+            delete_transaction(user_id, month_year)
         else:
             return
             
