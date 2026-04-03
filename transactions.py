@@ -113,18 +113,16 @@ def add_transaction(user_id, month_year):
         #get transaction date
         try:
             transaction_date = datetime.strptime(input("Enter transaction date (YYYY-MM-DD): "), "%Y-%m-%d")
-            if not (datetime.strptime(month_year, '%Y-%m') + relativedelta(months=1)) > transaction_date > datetime.strptime(month_year, '%Y-%m'):
+            if not (datetime.strptime(month_year, '%Y-%m') + relativedelta(months=1)) > transaction_date >= datetime.strptime(month_year, '%Y-%m'):
                 raise ValueError
         except ValueError:
             print("Please enter a valid date")
             continue
 
-        break
-    
         try:
             cursor.execute(
-                f"INSERT INTO transactions(amount, transaction_date, category_id, budget_id, user_id) VALUES (?, ?, ?, ?)",
-                (transaction_amount, transaction_date, category_id, budget_id, user_id, month_year)
+                f"INSERT INTO transactions(amount, transaction_date, category_id, budget_id, user_id) VALUES (?, ?, ?, ?, ?)",
+                (transaction_amount, transaction_date, category_id, budget_id, user_id)
             )
             print("Transaction added successfully")
         except:
@@ -133,6 +131,11 @@ def add_transaction(user_id, month_year):
     conn.commit()
     conn.close()
     return
+
+def add_transaction(user_id, month_year):
+    conn = sqlite3.connect(DATABASE)
+    conn.execute("PRAGMA foreign_keys = ON;") 
+    cursor = conn.cursor()
 
 
 def transaction_main(user_id):

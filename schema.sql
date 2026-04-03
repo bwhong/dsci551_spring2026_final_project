@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     amount DOUBLE NOT NULL,
     transaction_date TEXT NOT NULL,
     category_id INTEGER NOT NULL REFERENCES categories(category_id),
-    budget_id INTEGER NOT NULL REFERENCES budget(budget_id), 
+    budget_id INTEGER NOT NULL REFERENCES budgets(budget_id), 
     user_id INTEGER NOT NULL REFERENCES users(user_id)
 );
