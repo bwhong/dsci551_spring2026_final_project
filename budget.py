@@ -19,7 +19,7 @@ def budget_options(user_id, month_year):
     data = cursor.fetchall()
 
     if data:
-        print("Here are your set Budgets for the month")
+        print("\nHere are your set budgets for the month")
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
@@ -27,7 +27,7 @@ def budget_options(user_id, month_year):
 
     conn.close()
 
-    print("Select an option")
+    print("\nSelect an option")
     while True:
         budget_option_id = input("1: Add Budget\n2: Delete Budget\n3: Exit\n")
         if budget_option_id not in ("1", "2", "3"):
@@ -63,7 +63,7 @@ def add_budget(user_id, month_year):
         category = cursor.fetchone()
 
         if not category:
-            print("Category does not exist")
+            print("\nCategory does not exist")
             continue 
 
         category_id = category[0]
@@ -71,7 +71,7 @@ def add_budget(user_id, month_year):
         try:
             amount = float(input("Enter budget amount: "))
         except ValueError:
-            print("Please enter a valid number")
+            print("\nPlease enter a valid number")
             continue
 
         try:
@@ -81,7 +81,7 @@ def add_budget(user_id, month_year):
             )
             print("Budget added successfully")
         except:
-            print("Budget already exists.")
+            print("\nBudget already exists.")
 
     conn.commit()
     conn.close()
@@ -116,7 +116,7 @@ def delete_budget(user_id, month_year):
         category = cursor.fetchone()
         
         if not category:
-            print("Category not found")
+            print("\nCategory does not exist")
             continue
 
         category_id = category[0]
@@ -127,7 +127,7 @@ def delete_budget(user_id, month_year):
                 (category_id, user_id, month_year)
             )
             if cursor.rowcount == 0:
-                print("No budget exists for that category")
+                print("\nNo budget exists for that category")
             else:
                 print("Budget deleted successfully")
         except:
@@ -146,7 +146,7 @@ def budget_main(user_id):
             datetime.strptime(month_year, "%Y-%m")
             break
         except ValueError:
-            print('Please enter a valid date!')
+            print('\nPlease enter a valid date!')
 
     while True:
         budget_option_id, month_year = budget_options(user_id, month_year)
