@@ -9,16 +9,16 @@ def category_options(user_id):
     cursor.execute("SELECT * FROM categories where user_id = (?)", (user_id,))
     data = cursor.fetchall()
     if data:
-        print('Here are your Categories!')
+        print('\nHere are your Categories!')
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers=columns, tablefmt="grid"))
     else:
-        print("\nYou don't have any categories yet! Let's add some.\n")
-    print('Please select an option!')
+        print("\nYou don't have any categories yet! Let's add some.")
+    print('\nPlease select an option!')
     while True:
         category_options_id = input("1: Add Category \n2: Delete Category\n3: Exit\n")
         if category_options_id not in ("1","2","3"):
-            print('Please enter a proper option.')
+            print('\nPlease enter a proper option.')
             continue
         category_options_id = int(category_options_id)
         return category_options_id
@@ -27,7 +27,15 @@ def add_category(user_id):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     while True:
+        cursor.execute("SELECT * FROM categories where user_id = (?)", (user_id,))
+        data = cursor.fetchall()
+        if data:
+            print('\nHere are your Categories!')
+            columns = [name[0] for name in cursor.description]
+            print(tabulate(data, headers=columns, tablefmt="grid"))
+
         category_name = input("\nPlease input a category name to add! Input 'exit' if you want to leave. \n")
+
         if category_name == 'exit':
             break
         try:
@@ -44,6 +52,13 @@ def delete_category(user_id):
     conn.execute("PRAGMA foreign_keys = ON;") 
     cursor = conn.cursor()
     while True:
+        cursor.execute("SELECT * FROM categories where user_id = (?)", (user_id,))
+        data = cursor.fetchall()
+        if data:
+            print('\nHere are your Categories!')
+            columns = [name[0] for name in cursor.description]
+            print(tabulate(data, headers=columns, tablefmt="grid"))
+            
         category_name = input("\nPlease input a category name to delete! Input 'exit' if you want to leave. \n")
         if category_name == 'exit':
             break
