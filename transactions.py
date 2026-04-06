@@ -182,13 +182,13 @@ def transaction_main(user_id):
     while True:
         month_year = input("\nEnter Month and Year (YYYY-MM) for Transactions (or 'exit'):")
         if month_year == 'exit':
+            print()
             break
         try:
             datetime.strptime(month_year, "%Y-%m")
-            break
         except ValueError:
             print('Please enter a valid date!')
-    while True:
+
         budget_option_id, month_year = transaction_options(user_id, month_year)
 
         if budget_option_id == 1:
