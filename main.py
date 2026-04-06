@@ -7,7 +7,7 @@ from transactions import transaction_main
 
 if __name__ == "__main__":
     initialize_database()
-    print('Welcome to the Budget Management Application!\n')
+    print('\nWelcome to the Budget Management Application!\n')
     username = ask_username()
     user_id = validate_user(username)
     while True:
