@@ -47,6 +47,16 @@ def delete_category(user_id):
         category_name = input("\nPlease input a category name to delete! Input 'exit' if you want to leave. \n")
         if category_name == 'exit':
             break
+        cursor.execute(
+            "SELECT category_id FROM categories WHERE category_name = ? AND user_id = ?",
+            (category_name, user_id)
+        )
+        category = cursor.fetchone()
+        
+        if not category:
+            print("Category not found")
+            continue
+
         try:
             cursor.execute("DELETE FROM categories where category_name = ? and user_id = ?", (category_name, user_id))
         except:

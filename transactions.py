@@ -157,7 +157,15 @@ def delete_transaction(user_id, month_year):
         except ValueError:
             print('Please enter a proper transaction id.')
 
+        cursor.execute(
+            "SELECT transaction_id FROM transactions WHERE transaction_id = ? AND user_id = ?",
+            (transaction_id, user_id)
+        )
+        transaction = cursor.fetchone()
 
+        if not transaction:
+            print("Transaction not found")
+            continue
         try:
             cursor.execute(
                 "DELETE FROM transactions WHERE transaction_id = ?",

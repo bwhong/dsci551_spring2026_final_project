@@ -114,7 +114,7 @@ def delete_budget(user_id, month_year):
             (category_name, user_id)
         )
         category = cursor.fetchone()
-
+        
         if not category:
             print("Category not found")
             continue
