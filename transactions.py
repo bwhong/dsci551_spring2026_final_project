@@ -21,7 +21,7 @@ def transaction_options(user_id, month_year):
     data = cursor.fetchall()
 
     if data:
-        print("Here are your last 10 transactions of the month")
+        print("\nHere are your last 10 transactions of the month")
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
@@ -29,7 +29,7 @@ def transaction_options(user_id, month_year):
 
     conn.close()
 
-    print("Select an option")
+    print("\nSelect an option")
     while True:
         transaction_option_id = input("1: Add Transaction\n2: Delete Transaction\n3: Exit\n")
         if transaction_option_id not in ("1", "2", "3"):
