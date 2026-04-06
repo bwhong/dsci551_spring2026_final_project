@@ -18,8 +18,8 @@ if __name__ == "__main__":
             budget_main(user_id)
         elif main_menu_id == 3: 
             transaction_main(user_id)
-            # go to transactions py file and add/delete/update a transation (display a list of transactions but filtered for x things)
-        #elif main_menu_id == 4:    
+        elif main_menu_id == 4:
+            break
             # show summary statistics 
         elif main_menu_id == 5:
             break
