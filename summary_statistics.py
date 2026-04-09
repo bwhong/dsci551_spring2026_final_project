@@ -2,6 +2,10 @@ import sqlite3
 from config import DATABASE
 from tabulate import tabulate
 
+def summary_statisitcs_main(user_id):
+    month_year = input("Enter month (YYYY-MM): ")
+    summary_stats(user_id, month_year)
+    
 def summary_stats(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -10,7 +14,7 @@ def summary_stats(user_id, month_year):
         SELECT COUNT(*)
         FROM transactions
         WHERE user_id = ?
-        AND transaction_date >= ? || '-01'
+        AND transaction_date >= date(? || '-01')
         AND transaction_date < date(? || '-01', '+1 month')
     """, (user_id, month_year, month_year))
     total_transactions = cursor.fetchone()[0]
@@ -19,7 +23,7 @@ def summary_stats(user_id, month_year):
         SELECT COALESCE(SUM(amount), 0)
         FROM transactions
         WHERE user_id = ?
-        AND transaction_date >= ? || '-01'
+        AND transaction_date >= date(? || '-01')
         AND transaction_date < date(? || '-01', '+1 month')
     """, (user_id, month_year, month_year))
     total_spent = cursor.fetchone()[0]
@@ -32,9 +36,9 @@ def summary_stats(user_id, month_year):
     """, (user_id, month_year))
     total_budget = cursor.fetchone()[0]
 
-    net = total_budget - total_sent
+    net = total_budget - total_spent
 
-    print(f"Month: {month_year}")
+    print(f"\nMonth: {month_year}")
     print(f"Total Transactions: {total_transactions}")
     print(f"Total Budget: ${total_budget:.2f}")
     print(f"Total Spent: ${total_spent:.2f}")
