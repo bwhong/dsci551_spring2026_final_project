@@ -2,7 +2,7 @@ import sqlite3
 from config import DATABASE
 from tabulate import tabulate
 
-def summary_statisitcs_main(user_id):
+def summary_statistics_main(user_id):
     month_year = input("Enter month (YYYY-MM): ")
     summary_stats(user_id, month_year)
     
