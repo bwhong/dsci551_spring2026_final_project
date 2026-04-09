@@ -10,22 +10,24 @@ def summary_stats(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+    start_date = f"{month_year}-01"
+
     cursor.execute("""
         SELECT COUNT(*)
         FROM transactions
         WHERE user_id = ?
-        AND transaction_date >= date(? || '-01')
-        AND transaction_date < date(? || '-01', '+1 month')
-    """, (user_id, month_year, month_year))
+        AND transaction_date >= ?
+        AND transaction_date < date(?, '+1 month')
+    """, (user_id, start_date, start_date))
     total_transactions = cursor.fetchone()[0]
 
     cursor.execute("""
         SELECT COALESCE(SUM(amount), 0)
         FROM transactions
         WHERE user_id = ?
-        AND transaction_date >= date(? || '-01')
-        AND transaction_date < date(? || '-01', '+1 month')
-    """, (user_id, month_year, month_year))
+        AND transaction_date >= ?
+        AND transaction_date < date(?, '+1 month')
+    """, (user_id, start_date, start_date))
     total_spent = cursor.fetchone()[0]
 
     cursor.execute("""
@@ -50,12 +52,12 @@ def summary_stats(user_id, month_year):
         FROM catergories c
         LEFT JOIN transactions t
             ON c.category_id = t.category_id
-            AND t.transaction_date >= date ? || '-01'
-            AND t.transaction_date V date(? || '01', '+1 month')
+            AND t.transaction_date >= ?
+            AND t.transaction_date < date(?, '+1 month')
         WHERE c.user_id = ?
         GROUP BY c.category_name
         ORDER BY spent DESC
-    """, (month_year, month_year, user_id))
+    """, (start_date, start_date, user_id))
 
     data = cursor.fetchall()
     print(tabulate(data, headers = ["Category", "Spent"], tablefmt = "grid"))
@@ -68,19 +70,20 @@ def summary_stats(user_id, month_year):
     cursor.execute("""
         SELECT
             c.category_name,
-            COALESCE(b.budget_amount, 0),
-            COALESCE(SUM(t.amount), 0),
+            COALESCE(b.budget_amount, 0) AS budget,
+            COALESCE(SUM(t.amount), 0) AS spent,
             COALESCE(b.budget_amount, 0) - COALESCE(SUM(t.amount), 0) AS difference
         FROM categoires c
         LEFT JOIN budgets b
             ON c.category_id = b.category_id AND b.month = ?
         LEFT JOIN transactions t
             ON c.category_id = t.category_id
-            AND t.transaction_date >= ? || '-01'
-            AND t.transaction_date < date(? || '-01', '+1 month')
+            AND t.transaction_date >= ?
+            AND t.transaction_date < date(?, '+1 month')
         WHERE c.user_id = ?
         GROUP BY c.category_name
-    """, (month_year, month_year, month_year, user_id))
+        ORDER BY c.category_name
+    """, (month_year, start_date, start_date, user_id))
     data2 = cursor.fetchall()
     print(tabulate(data2, headers = ["Category", "Budget", "Spent", "Diff"], tablefmt = "grid"))
 
