@@ -20,7 +20,6 @@ if __name__ == "__main__":
         elif main_menu_id == 3: 
             transaction_main(user_id)
         elif main_menu_id == 4:
-            break
-            # show summary statistics 
+            summary_statistics_main(user_id)
         elif main_menu_id == 5:
             break
