@@ -4,6 +4,7 @@ from main_menu import main_menu_options
 from category import category_main
 from budget import budget_main
 from transactions import transaction_main
+from summary_statistics import summary_statistics_main
 
 if __name__ == "__main__":
     initialize_database()
