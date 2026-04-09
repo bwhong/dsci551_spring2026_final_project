@@ -49,7 +49,7 @@ def summary_stats(user_id, month_year):
     print("\n Spending by Category")
     cursor.execute("""
         SELECT c.category_name, COALESCE(SUM(t.amount), 0) AS spent
-        FROM catergories c
+        FROM categories c
         LEFT JOIN transactions t
             ON c.category_id = t.category_id
             AND t.transaction_date >= ?
@@ -73,7 +73,7 @@ def summary_stats(user_id, month_year):
             COALESCE(b.budget_amount, 0) AS budget,
             COALESCE(SUM(t.amount), 0) AS spent,
             COALESCE(b.budget_amount, 0) - COALESCE(SUM(t.amount), 0) AS difference
-        FROM categoires c
+        FROM categories c
         LEFT JOIN budgets b
             ON c.category_id = b.category_id AND b.month = ?
         LEFT JOIN transactions t
