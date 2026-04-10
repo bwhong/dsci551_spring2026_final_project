@@ -23,7 +23,7 @@ def budget_options(user_id, month_year):
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
-        print("\nYou do not have any budgets yet! Let's add some.\n")
+        print("\nYou do not have any budgets yet! Let's add some.")
 
     conn.close()
 
@@ -147,6 +147,7 @@ def budget_main(user_id):
             datetime.strptime(month_year, "%Y-%m")
         except ValueError:
             print('Please enter a valid date!')
+            continue
 
         budget_option_id, month_year = budget_options(user_id, month_year)
 

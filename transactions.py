@@ -25,7 +25,7 @@ def transaction_options(user_id, month_year):
         columns = [name[0] for name in cursor.description]
         print(tabulate(data, headers = columns, tablefmt = "grid"))
     else:
-        print("\nYou do not have any transactions yet! Let's add some.\n")
+        print("\nYou do not have any transactions yet! Let's add some.")
 
     conn.close()
 
