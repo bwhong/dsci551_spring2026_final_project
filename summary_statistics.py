@@ -1,10 +1,19 @@
 import sqlite3
 from config import DATABASE
 from tabulate import tabulate
+from datetime import datetime
 
 def summary_statistics_main(user_id):
-    month_year = input("Enter month (YYYY-MM): ")
-    summary_stats(user_id, month_year)
+    while True:
+        month_year = input("\nEnter month (YYYY-MM) for summary statistics (or 'exit'): ")
+        if month_year == 'exit':
+            print()
+            break
+        try:
+            datetime.strptime(month_year, "%Y-%m")
+            summary_stats(user_id, month_year)
+        except ValueError:
+            print('Please enter a valid date!')
     
 def summary_stats(user_id, month_year):
     conn = sqlite3.connect(DATABASE)
@@ -45,28 +54,7 @@ def summary_stats(user_id, month_year):
     print(f"Total Budget: ${total_budget:.2f}")
     print(f"Total Spent: ${total_spent:.2f}")
     print(f"Net (Budget - Spent): ${net:.2f}")
-
-    print("\n Spending by Category")
-    cursor.execute("""
-        SELECT c.category_name, COALESCE(SUM(t.amount), 0) AS spent
-        FROM categories c
-        LEFT JOIN transactions t
-            ON c.category_id = t.category_id
-            AND t.transaction_date >= ?
-            AND t.transaction_date < date(?, '+1 month')
-        WHERE c.user_id = ?
-        GROUP BY c.category_name
-        ORDER BY spent DESC
-    """, (start_date, start_date, user_id))
-
-    data = cursor.fetchall()
-    print(tabulate(data, headers = ["Category", "Spent"], tablefmt = "grid"))
-
-    if data:
-        top_category = data[0]
-        print(f"\nTop Spending Category: {top_category[0]} (${top_category[1]:.2f})")
-
-    print("\n Budget Vs. Actual")
+    print(f"Average Monthly Spend:")
     cursor.execute("""
         SELECT
             c.category_name,
@@ -84,7 +72,14 @@ def summary_stats(user_id, month_year):
         GROUP BY c.category_name
         ORDER BY c.category_name
     """, (month_year, start_date, start_date, user_id))
-    data2 = cursor.fetchall()
-    print(tabulate(data2, headers = ["Category", "Budget", "Spent", "Diff"], tablefmt = "grid"))
+    data = cursor.fetchall()
+
+    if data:
+        top_category = data[0]
+        print(f"\nTop Spending Category: {top_category[0]} (${top_category[1]:.2f})")
+
+    print(tabulate(data, headers = ["Category", "Budget", "Spent", "Diff"], tablefmt = "grid"))
 
     conn.close()
+
+    return
