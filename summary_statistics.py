@@ -49,12 +49,23 @@ def summary_stats(user_id, month_year):
 
     net = total_budget - total_spent
 
+    cursor.execute("""
+        SELECT AVG(total_spent) FROM (
+        SELECT SUM(amount) as total_spent, strftime('%Y-%m', transaction_date) as month
+        FROM transactions 
+        WHERE user_id = ?
+        GROUP BY month)
+    """, (user_id,))
+
+    average_spent = cursor.fetchone()[0]
+
     print(f"\nMonth: {month_year}")
     print(f"Total Transactions: {total_transactions}")
     print(f"Total Budget: ${total_budget:.2f}")
     print(f"Total Spent: ${total_spent:.2f}")
     print(f"Net (Budget - Spent): ${net:.2f}")
-    print(f"Average Monthly Spend:")
+    print(f"Average Monthly Spend: ${average_spent:.2f}")
+
     cursor.execute("""
         SELECT
             c.category_name,
@@ -73,10 +84,6 @@ def summary_stats(user_id, month_year):
         ORDER BY c.category_name
     """, (month_year, start_date, start_date, user_id))
     data = cursor.fetchall()
-
-    if data:
-        top_category = data[0]
-        print(f"\nTop Spending Category: {top_category[0]} (${top_category[1]:.2f})")
 
     print(tabulate(data, headers = ["Category", "Budget", "Spent", "Diff"], tablefmt = "grid"))
 
