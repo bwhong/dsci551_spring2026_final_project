@@ -70,6 +70,8 @@ def add_budget(user_id, month_year):
 
         try:
             amount = float(input("Enter budget amount: "))
+            if amount < 0:
+                raise ValueError
         except ValueError:
             print("\nPlease enter a valid number")
             continue

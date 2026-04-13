@@ -106,6 +106,8 @@ def add_transaction(user_id, month_year):
                 break
             else:
                 transaction_amount = float(transaction_amount)
+                if transaction_amount <= 0:
+                    raise ValueError
         except ValueError:
             print("Please enter a valid amount")
             continue
