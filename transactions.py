@@ -190,6 +190,7 @@ def transaction_main(user_id):
             datetime.strptime(month_year, "%Y-%m")
         except ValueError:
             print('Please enter a valid date!')
+            continue
 
         budget_option_id, month_year = transaction_options(user_id, month_year)
 
