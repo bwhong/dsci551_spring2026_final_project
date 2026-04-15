@@ -27,3 +27,5 @@ CREATE TABLE IF NOT EXISTS transactions (
     budget_id INTEGER NOT NULL REFERENCES budgets(budget_id), 
     user_id INTEGER NOT NULL REFERENCES users(user_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_transactions ON transactions(user_id, transaction_date)
