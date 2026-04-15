@@ -22,4 +22,5 @@ if __name__ == "__main__":
         elif main_menu_id == 4:
             summary_statistics_main(user_id)
         elif main_menu_id == 5:
+            print('\nSee you later!\n')
             break
