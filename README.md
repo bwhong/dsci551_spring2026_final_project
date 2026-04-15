@@ -1,7 +1,28 @@
-## Overview
-This project is about creating a budget management application using Python and SQLite. The goal of the system is to allow users to manage their finances based on the categories they choose and the budget they decide. This allows for users to generate budgets that are reliable, user friendly, and easy for consumers. 
+# Overview
+This project is about creating a budget management application that allows users to track transactions by category and generate personalizable budgets. 
 
-SQLite was chosen due to its minimal setup, quick indexes, and ACID-compliancy. Since SQLite stores everything on a single local file, it is extremely portable, and it allows easy data transfer. It stores all its tables as B-Trees, which allows for extremely fast and efficient queries. It is the perfect relational database for this project. 
+# Features
+There are 5 major features of this application.
+- User Authentication
+- Category Management
+- Budget Management 
+- Transaction Management
+- Summary Statistics
+
+# File Structure
+- main.py - entry point that directs users to different features
+- main_menu.py -  displays the main menu and allows users to navigate between application features
+- config.py - contains all global configuration variables
+- schema.sql - contains sql script that generates required tables and indexes if they do not exist already
+- database_initalization.py - connects to the SQLite database and executes the SQL script to create database structure
+- user.py - controls user authentication and generates new user_id in database if one does not exist
+- category.py - handles category management, which includes viewing, adding, and deleting categories
+- budget.py - handles budget management, which includes viewing, adding, and deleting budgets
+- transactions.py - handles transactions management, which includes viewing, adding, and deleting transactions
+- summary_statistics.py - generate monthly summar statistics for user spending
+
+# Data Storage
+All data is stored in a local budget_management_application.db SQLite database file that is automatically created when the application is first run. 
 
 # How to run Budget Management Application 
 If you do not have pip installed, please refer to this link and download pip based on your system: 
