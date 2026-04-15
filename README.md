@@ -31,7 +31,7 @@ https://pip.pypa.io/en/stable/installation/
 
 After installing pip, please follow the instructions:
 
-From `dsci551_spring2026_final_project` directory run:
+Ensure that you are in the root project directory. From `dsci551_spring2026_final_project` directory run:
 
 `pip install -r "requirements.txt"`
 
