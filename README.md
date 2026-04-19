@@ -24,6 +24,8 @@ There are 5 major features of this application.
 # Data Storage
 All data is stored in a local budget_management_application.db SQLite database file that is automatically created when the application is first run. 
 
+If you would like to use a new, empty database, please delete the budget_management_application.db. If you would like to keep the current database and the test data, do not touch the file. 
+
 # How to run Budget Management Application 
 If you do not have pip installed, please refer to this link and download pip based on your system: 
 
@@ -40,3 +42,9 @@ This first step will download all requirements required to run this application.
 `python main.py`
 
 This will run the budget management application! 
+
+If you are interested in using the test data, please use the following username:
+
+test
+
+This user has been set up with budgets and categories for 2026-01 to 2026-05. 
